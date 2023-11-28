@@ -4,37 +4,45 @@ from PIL import Image
 import os
 import numpy as np
 
-def get_block_colours():
+def get_average_block_colours(directory):
     colour_to_block = []
 
     # loop over files in blocks directory
-    for filename in os.listdir("./blocks"):
+    for filename in os.listdir(directory):
 
         # open each image file
         if filename.endswith(".png"):
-            with Image.open("./blocks/" + filename) as image:
+            with Image.open(directory + filename) as image:
 
+                # convert image to RGBA so that all images are compatible
                 if image.mode != 'RGBA':
                     image = image.convert("RGBA")
-
-                # load the image to get the pixels
-                pixels = image.load()
-
-                average = 0 if isinstance(pixels[0,0], int) else np.zeros(len(pixels[0,0]))
-
-                # loop over each pixel
-                for y in range(image.width):
-                    for x in range(image.height):
-
-                        # update average value
-                        #print(pixels[y,x], average)
-                        average += pixels[y, x]
                 
                 # normalize and save average colour value
-                colour_to_block.append((np.array(average / (image.width * image.height)), filename))
-
+                colour_to_block.append((np.average(np.array(image), axis=(0,1)), filename))
 
     return colour_to_block
+
+
+def get_median_block_colours(directory):
+    colour_to_block = []
+
+    # loop over files in blocks directory
+    for filename in os.listdir(directory):
+
+        # open each image file
+        if filename.endswith(".png"):
+            with Image.open(directory + filename) as image:
+
+                # convert image to RGBA so that all images are compatible
+                if image.mode != 'RGBA':
+                    image = image.convert("RGBA")
+                
+                # normalize and save average colour value
+                colour_to_block.append((np.median(np.array(image), axis=(0,1)), filename))
+
+    return colour_to_block
+
 
 if __name__ == '__main__':
     colours = get_block_colours()
