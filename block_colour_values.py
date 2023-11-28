@@ -4,21 +4,14 @@ from PIL import Image
 import os
 import numpy as np
 
-class Block_Image:
-    def __init__(self, name, image_type, average_colour):
-        self.name = name
-        self.image_type = image_type
-        self.average_colour = average_colour
-
 def get_block_colours():
-    colour_to_block = {}
+    colour_to_block = []
 
-# loop over files in blocks directory
+    # loop over files in blocks directory
     for filename in os.listdir("./blocks"):
 
         # open each image file
         if filename.endswith(".png"):
-            print(filename)
             with Image.open("./blocks/" + filename) as image:
 
                 if image.mode != 'RGBA':
@@ -38,12 +31,12 @@ def get_block_colours():
                         average += pixels[y, x]
                 
                 # normalize and save average colour value
-                colour_to_block[tuple(average / (image.width * image.height))] = filename
+                colour_to_block.append((np.array(average / (image.width * image.height)), filename))
 
 
     return colour_to_block
 
 if __name__ == '__main__':
-    d = get_block_colours()
-    for key in d:
-        print(key, d[key])
+    colours = get_block_colours()
+    for colour, filename in colours:
+        print(colour, filename)
