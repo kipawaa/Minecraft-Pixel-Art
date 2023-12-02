@@ -41,10 +41,11 @@ if __name__ == "__main__":
 
         # get block palette
         user = input("would you like to use all blocks (a), or suvival blocks (s)? (a/s): ")
+        block_directory = os.path.abspath(os.getcwd())
         if user == "s":
-            block_directory = "./survival blocks/"
+            block_directory += "/survival blocks/"
         else:
-            block_directory = "./all blocks/"
+            block_directory += "/all blocks/"
 
         # convert to pixel art
         # get colour data from file
